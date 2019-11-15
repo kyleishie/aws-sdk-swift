@@ -15,9 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install
-      run: 
-        docker pull swift:5.0 &&
-        docker run -d -p 8000:8000 tray/dynamodb-local -inMemory -port 8000 &&
+      run: |
+        docker pull swift:5.0
+        docker run -d -p 8000:8000 tray/dynamodb-local -inMemory -port 8000
         docker run -d -p 4569:4569 lphoward/fake-s3
 
     - name: Build & Test
@@ -28,9 +28,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install
-      run: 
-        docker pull swift:5.0 &&
-        docker run -d -p 8000:8000 tray/dynamodb-local -inMemory -port 8000 &&
+      run: |
+        docker pull swift:5.0
+        docker run -d -p 8000:8000 tray/dynamodb-local -inMemory -port 8000
         docker run -d -p 4569:4569 lphoward/fake-s3
 
     - name: Build & Test
