@@ -1,0 +1,37 @@
+name: Swift
+
+on: [push, pull_request, release]
+
+jobs:
+  macos:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: swift build
+            
+  linux-swift-5-0:
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install
+      run: 
+        docker pull swift:5.0 &&
+        docker run -d -p 8000:8000 tray/dynamodb-local -inMemory -port 8000 &&
+        docker run -d -p 4569:4569 lphoward/fake-s3
+
+    - name: Build & Test
+      run: docker run --network=host -v "$(pwd):/root" swift:5.0 /bin/sh -c "apt-get -qq update && apt-get -q -y install tzdata libssl-dev zlib1g-dev && cd /root && swift test"
+            
+  linux-swift-5-1-1:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install
+      run: 
+        docker pull swift:5.0 &&
+        docker run -d -p 8000:8000 tray/dynamodb-local -inMemory -port 8000 &&
+        docker run -d -p 4569:4569 lphoward/fake-s3
+
+    - name: Build & Test
+      run: docker run --network=host -v "$(pwd):/root" swift:5.1.1 /bin/sh -c "apt-get -qq update && apt-get -q -y install tzdata libssl-dev zlib1g-dev && cd /root && swift test"
