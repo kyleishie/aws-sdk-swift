@@ -20,6 +20,14 @@ let servicePatches : [String: [Patch]] = [
         Patch(.replace, entry:["shapes", "HttpVersion", "enum", 0], value:"HTTP1_1", originalValue:"http1.1"),
         Patch(.replace, entry:["shapes", "HttpVersion", "enum", 1], value:"HTTP2", originalValue:"http2")
     ],
+    "CloudWatch" : [
+        // Patch error shape to avoid warning in generated code. Both errors have the same code "ResourceNotFound"
+        Patch(.replace, entry:["operations", "GetDashboard", "errors", 1, "shape"], value:"ResourceNotFoundException", originalValue: "DashboardNotFoundError"),
+        Patch(.replace, entry:["operations", "DeleteDashboards", "errors", 1, "shape"], value:"ResourceNotFoundException", originalValue: "DashboardNotFoundError")
+    ],
+    "ComprehendMedical" : [
+        Patch(.add, entry:["shapes", "EntitySubType", "enum"], value:"DX_NAME")
+    ],
     "DirectoryService" : [
         // DirectoryService clashes with a macOS framework, so need to rename the framework
         Patch(.replace, entry:["serviceName"], value:"AWSDirectoryService", originalValue:"DirectoryService")
@@ -52,8 +60,6 @@ let servicePatches : [String: [Patch]] = [
         Patch(.add, entry:["shapes", "BucketLocationConstraint", "enum"], value:"ca-central-1"),
         Patch(.add, entry:["shapes", "BucketLocationConstraint", "enum"], value:"cn-northwest-1"),
         Patch(.add, entry:["shapes", "BucketLocationConstraint", "enum"], value:"me-south-1"),
-        // Add validation check for bucket name. To ensure we aren't creating buckets containing '.' in their name
-        Patch(.add, entry:["shapes", "BucketName"], key:"pattern", value:"^[a-z0-9][a-z0-9-]+[a-z0-9]$")
     ]
 ]
 
