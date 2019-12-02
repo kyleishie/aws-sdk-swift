@@ -27,8 +27,8 @@ jobs:
     services:
       localstack:
         image: localstack/localstack
-        ports:
-        - 4567-4597:4567-4597
+        # ports:
+        # - 4567-4597:4567-4597
         env:
           SERVICES: 'apigateway,dynamodb,iam,s3,sns,sqs,ssm'
     container:
