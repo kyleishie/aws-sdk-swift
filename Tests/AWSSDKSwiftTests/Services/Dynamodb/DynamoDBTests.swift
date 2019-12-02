@@ -67,8 +67,9 @@ class DynamoDBTests: XCTestCase {
     //MARK: TESTS
     
     func testGetObject() {
+        print("Endpoint for DynamoDB: \(self.client.client.endpoint)")
+      
         attempt {
-            
             let testData = try TestData(#function, client: client)
 
             let input = DynamoDB.GetItemInput(
