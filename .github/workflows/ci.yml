@@ -48,6 +48,14 @@ jobs:
       run: |
         apt-get update -qq
         apt-get install -q -y tzdata libssl-dev zlib1g-dev
+    - name: Print ports
+      run: |
+        echo "localstack:4567 ${{ job.services.localstack.ports['4567'] }}"
+        echo "localstack:4569 ${{ job.services.localstack.ports['4569'] }}"
+        echo "localstack:4575 ${{ job.services.localstack.ports['4575'] }}"
+        echo "localstack:4576 ${{ job.services.localstack.ports['4576'] }}"
+        echo "localstack:4583 ${{ job.services.localstack.ports['4583'] }}"
+        echo "localstack:4593 ${{ job.services.localstack.ports['4593'] }}"
     - name: Checkout
       uses: actions/checkout@v1
       with:
