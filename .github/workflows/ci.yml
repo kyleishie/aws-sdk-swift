@@ -1,0 +1,56 @@
+name: CI
+
+on: 
+  push:
+    branches: 
+    - "*"
+  pull_request:
+    branches: 
+    - master
+
+jobs:
+  macos:
+    runs-on: macOS-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+    - name: SPM build
+      run: swift build
+
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tag: ['5.0', '5.1']
+    services:
+      localstack:
+        image: localstack/localstack
+        ports:
+        - 4567-4597:4567-4597
+        env:
+          SERVICES: 'apigateway,dynamodb,iam,s3,sns,sqs,ssm'
+    container:
+      image: swift:${{ matrix.tag }}
+      volumes:
+      - $GITHUB_WORKSPACE:/src
+      options: --workdir /src
+    steps:
+    - name: Install dependencies
+      run: |
+        apt-get update -qq
+        apt-get install -q -y tzdata libssl-dev zlib1g-dev
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+    - name: Test
+      run: swift test -Xswiftc -DDEBUG
+      env:
+        APIGATEWAY_ENDPOINT : "http://localstack:4567"
+        DYNAMODB_ENDPOINT   : "http://localstack:4569"
+        SNS_ENDPOINT        : "http://localstack:4575"
+        SQS_ENDPOINT        : "http://localstack:4576"
+        SSM_ENDPOINT        : "http://localstack:4583"
+        IAM_ENDPOINT        : "http://localstack:4593"
